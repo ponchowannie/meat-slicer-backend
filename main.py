@@ -1,5 +1,5 @@
 from process.helper import create_slice_dict, volume_aggregator
-from csv_utils.files.csv_handler import clean_csv_file_to_df
+from csv_utils.csv_handler import clean_csv_file_to_df
 from config import set_env
 
 import os
@@ -7,8 +7,6 @@ import pandas as pd
 from websocket.socket_handler import start_server, get_data_socket
 from conveyor.conveyor import initialize_arduino, start_conveyor, stop_conveyor, close_conveyor_conn, listen_to_arduino
 import threading
-import tkinter as tk
-from tkinter import messagebox
 
 ############################################################################################################
 def main(df):
@@ -37,9 +35,10 @@ def main(df):
     )
     volume_aggregator(df, slice_data=slice_data)
     
+# TODO: MOVE TO CONFIG    
 # please set the filepath
 project_path = os.path.dirname(os.path.abspath(__file__))
-os.environ["filepath"] = "csv_files/eraser_data.csv"
+os.environ["filepath"] = "files/eraser_data.csv"
 
 if __name__ == "__main__":
     # Define for testing env

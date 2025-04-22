@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from utils.loader import load_data
+from utils.point_cloud_loader import load_data
 
 point_cloud_routes = Blueprint("point_cloud", __name__)
 

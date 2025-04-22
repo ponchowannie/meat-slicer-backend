@@ -13,8 +13,7 @@ async def handle_connection(websocket, path):
 
             # Process the data into a DataFrame
             df = process_data(data)
-            print("DataFrame created:")
-            print(df)
+            print("DataFrame created")
 
             # Example: Send a response back to the client
             response = {
