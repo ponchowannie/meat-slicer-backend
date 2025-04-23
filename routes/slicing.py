@@ -1,17 +1,34 @@
 from flask import Blueprint, jsonify, request
+from process.helper import create_slice_dict, volume_aggregator
+from config import *
+from csv_utils.csv_handler import get_volume_from_csv
 
 slicing_routes = Blueprint("slicing", __name__)
 
 @slicing_routes.route("/slice", methods=["POST"])
 def slice_data():
+    # Parse the request data
     data = request.json
     axis = data.get("axis")
     slices = data.get("slices")
     print(f"Slicing request received: axis={axis}, slices={slices}")
+
+    df, volume = get_volume_from_csv(PREPROCESSED_FILEPATH)
+    df = df.iloc[:-1]  # Disregard the last row of the DataFrame
+
+    # Create slice dictionary
+    slice_data = create_slice_dict(
+        num_slices=slices, volume=volume, cut_axis=axis
+    )
+    print(f"Slice data created: {slice_data}")
+    volume_aggregator(df, slice_data=slice_data)  # Pass None for df as placeholder
+    
     response_data = {
         "message": "Slicing request processed successfully",
         "axis": axis,
         "slices": slices,
+        "slice_data": slice_data,
+        "volume": volume,
     }
     return jsonify(response_data)
 

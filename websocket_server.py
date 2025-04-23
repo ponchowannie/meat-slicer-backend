@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 from websocket.socket_handler import process_data
+from csv_utils.csv_handler import df_aggregate_volume_to_csv
 
 # Handle incoming WebSocket messages
 async def handle_connection(websocket, path):
@@ -14,6 +15,10 @@ async def handle_connection(websocket, path):
             # Process the data into a DataFrame
             df = process_data(data)
             print("DataFrame created")
+
+            # Caculate volume and output csv
+            df_aggregate_volume_to_csv(df)
+            print("Volume aggregated and saved to CSV")
 
             # Example: Send a response back to the client
             response = {

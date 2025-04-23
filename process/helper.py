@@ -26,13 +26,13 @@ def get_slice_lane(column_values, coordinates):
 
 # create_slice_dict -- Helper function to create a dictionary for slicing
 def create_slice_dict(
-    num_slices: int = 0, volume: float = 0.0, cut_direction: str = "X"
+    num_slices: int = 0, volume: float = 0.0, cut_axis: str = "X"
 ):
     volume_per_slice = volume / num_slices
     return {
         "slices": num_slices,
         "volume_per_slice": volume_per_slice,
-        "cut_direction": cut_direction,
+        "cut_direction": cut_axis,
     }
 
 def volume_aggregator(
@@ -42,20 +42,25 @@ def volume_aggregator(
     start_time = time.time()
     
     # Get x, y, z values
-    x_coords = df.columns.astype(float)
-    y_coords = df.index.astype(float)
-    z_values = df.to_numpy(float)
+    x_coords = df.iloc[0, 1:].astype(float).to_numpy()  # First row, excluding the first column
+    y_coords = df.iloc[1:, 0].astype(float).to_numpy()  # First column, excluding the first row
+    z_values = df.iloc[1:, 1:].to_numpy(float)  # Exclude the first row and column
 
     # Calculate the differences between consecutive x and y coordinates
     dx = np.diff(x_coords)
     dy = np.diff(y_coords)
 
+    # Cut Direction
+    cut_axis1 = "x"
+    cut_axis2 = "y"
+
     is_slice = False
-    if slice_data is not None:
+    if slice_data:
         is_slice = True
         # slices = slice_data["slices"]
         volume_per_slice = slice_data["volume_per_slice"]
         if slice_data["cut_direction"].lower() == "y":
+            cut_axis1, cut_axis2 = cut_axis2, cut_axis1
             dx, dy = dy, dx
             x_coords, y_coords = y_coords, x_coords
             z_values = z_values.T  # Transpose the z_values array
@@ -76,14 +81,15 @@ def volume_aggregator(
             cell_area = dx_value * dy_value
             # Add the volume of the cell to the total volume
             total_volume += avg_height * cell_area
+            total_total_volume = total_volume
                             
         if is_slice:
-            if total_volume >= volume_per_slice:
+            if (total_volume/1000) >= volume_per_slice:
                 print("-----------------------------")
                 start_cut_position, end_cut_position = get_slice_lane(z_values[:, i], y_coords)
                 print(
-                    f"Cut at {os.environ['DIR1']} position: {x_coords[i]}, "
-                    f"from {os.environ['DIR2']}: {start_cut_position:.3f} to {end_cut_position:.3f} # 10% offset"
+                    f"Cut at {cut_axis1} position: {x_coords[i]}, "
+                    f"from {cut_axis2}: {start_cut_position:.3f} to {end_cut_position:.3f} # 10% offset"
                 )
                 print_time(f"Accumulated volume: {total_volume/1000:.2f} cm^3", integral_time)
                 integral_time = time.time()

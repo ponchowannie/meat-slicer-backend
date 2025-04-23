@@ -9,7 +9,7 @@ async def test_websocket_client():
             print("Connected to WebSocket server")
 
             # Example data to send (e.g., CSV-like data for processing)
-            data_to_send = "x,y,z\n1,2,3\n4,5,6\n7,8,9"
+            data_to_send = "0.1,0,1,2\n0.1,1,2,3\n0.2,3,4,6\n0.3,7,8,9"
             print(f"Sending data:\n{data_to_send}")
             
             # Send the data to the server
