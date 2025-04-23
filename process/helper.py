@@ -94,9 +94,6 @@ def volume_aggregator(
                 print_time(f"Accumulated volume: {total_volume/1000:.2f} cm^3", integral_time)
                 integral_time = time.time()
                 total_volume = 0.0  # Reset for the next slice
-                
-    if is_slice:
-        return None
-    else:
-        print_time(f"The volume of the scanned object is approximately {total_volume/1000:.2f} cm^3.", start_time)
-        return total_volume
+    print("-----------------------------")
+    print_time("Processed cut positions for a total time of", start_time)
+    return None

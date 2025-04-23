@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from config import *
-from routes.hello import hello_world
+from routes.hello_world_route import hello_world
 from routes import hello_world, point_cloud_routes, slicing_routes
 
 app = Flask(__name__)
