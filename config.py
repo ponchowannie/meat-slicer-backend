@@ -2,9 +2,13 @@
 WEBSITE_SERVER = "http://localhost:5173"
 
 # Backend
-BACKEND_PORT = 5000
+BACKEND_HOST = "http://127.0.0.1"
+BACKEND_PORT = "8000"
 CSV_FILEPATH = "./files/extracted_data.csv"
 PREPROCESSED_FILEPATH = "./files/prepocessed_data.csv"
+
+# WebSocket
+WEBSOCKET_ENDPOINT = "ws://127.0.0.1:8765"
 
 # constants
 DEPTH_INCREMENT = 0.3

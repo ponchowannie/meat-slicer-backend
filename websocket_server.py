@@ -1,8 +1,8 @@
 import asyncio
 import websockets
 import requests  # Added for REST API call
-from websocket.socket_handler import process_data
-from csv_utils.csv_handler import df_aggregate_volume_to_csv
+from csv_utils.csv_handler import df_aggregate_volume_to_csv, process_data
+from config import BACKEND_HOST, BACKEND_PORT
 
 # Handle incoming WebSocket messages
 async def handle_connection(websocket, path):
@@ -23,7 +23,7 @@ async def handle_connection(websocket, path):
 
             # Signal to REST API to update
             try:
-                response = requests.post("http://127.0.0.1:5000/notify_update")
+                response = requests.post(f"{BACKEND_HOST}:{BACKEND_PORT}/notify_update")
                 print(f"Signaled update to REST API, response status: {response.status_code}")
             except requests.RequestException as e:
                 print(f"Failed to signal update to REST API: {e}")

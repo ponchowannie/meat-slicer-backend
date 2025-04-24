@@ -10,33 +10,16 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import *
 from utils.utils import print_time, execution_time
 
+# Function to process received data and convert it to a DataFrame
+def process_data(data):
+    # Split the data into rows based on newline or other delimiters
+    rows = data.strip().split("\n")
+    # Split each row into columns based on commas
+    data_list = [row.split(",") for row in rows]
+    # Create a DataFrame
+    df = pd.DataFrame(data_list)
 
-def extract_data_to_csv(filepath):
-    # Find the start time
-    start_time = time.time()
-
-    output_file_path = "extracted_data.csv"
-
-    # Define the row where "Y\X" is located (zero-based index)
-    yx_row = 27
-
-    # Read the CSV file, skipping rows before "Y\X"
-    df = pd.read_csv(filepath, header=None, dtype=str, skiprows=yx_row)
-
-    # Find the first occurrence of "End" in the first column
-    end_row = df[df[0] == "End"].index.min()
-
-    # Extract the relevant data up to the row before "End"
-    extracted_data = df.iloc[:end_row]
-
-    # Fill NaN values with 0
-    extracted_data = extracted_data.fillna(0)
-
-    extracted_data.to_csv(os.environ["filepath"], index=False, header=False)
-    print(f"Extracted data saved to {output_file_path}")
-
-    execution_time(start_time)
-    return extracted_data
+    return df
 
 def preprocess_df(df, x_resolution, y_resolution):
     # Find the start time

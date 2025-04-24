@@ -1,9 +1,10 @@
 import asyncio
 import websockets
 import csv
+from config import WEBSOCKET_ENDPOINT
 
 async def test_websocket_client():
-    uri = "ws://127.0.0.1:8765"  # WebSocket server address
+    uri = WEBSOCKET_ENDPOINT  # WebSocket server address
     try:
         # Read and process the CSV file
         csv_file_path = "./files/extracted_data.csv"

@@ -19,6 +19,7 @@ def notify_update():
     """
     Internal endpoint to notify clients of updates by adding a message to the SSE queue.
     """
+    print("Update notification received")
     update_data = load_data()
     sse_queue.put(update_data)  # Add the raw data (not serialized) to the queue
     return jsonify({"message": "Update notification sent"})
