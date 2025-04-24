@@ -21,7 +21,7 @@ def slice_data():
         num_slices=slices, volume=volume, cut_axis=axis
     )
     print(f"Slice data created: {slice_data}")
-    volume_aggregator(df, slice_data=slice_data)  # Pass None for df as placeholder
+    volume_aggregator(df, slice_data=slice_data)
     
     response_data = {
         "message": "Slicing request processed successfully",

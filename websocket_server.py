@@ -1,5 +1,6 @@
 import asyncio
 import websockets
+import requests  # Added for REST API call
 from websocket.socket_handler import process_data
 from csv_utils.csv_handler import df_aggregate_volume_to_csv
 
@@ -10,7 +11,7 @@ async def handle_connection(websocket, path):
         while True:
             # Wait for a message from the client
             data = await websocket.recv()
-            print(f"Received data: {data}")
+            print(f"Received data (first 50 chars): {str(data)[:50]}")
 
             # Process the data into a DataFrame
             df = process_data(data)
@@ -19,6 +20,13 @@ async def handle_connection(websocket, path):
             # Caculate volume and output csv
             df_aggregate_volume_to_csv(df)
             print("Volume aggregated and saved to CSV")
+
+            # Signal to REST API to update
+            try:
+                response = requests.post("http://127.0.0.1:5000/notify_update")
+                print(f"Signaled update to REST API, response status: {response.status_code}")
+            except requests.RequestException as e:
+                print(f"Failed to signal update to REST API: {e}")
 
             # Example: Send a response back to the client
             response = {

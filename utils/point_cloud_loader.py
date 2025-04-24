@@ -5,7 +5,11 @@ from .edge_padding import pad_edges
 
 # Keep this file for data loading logic. Ensure it only contains reusable functions.
 def load_data():
-    df = pd.read_csv(CSV_FILEPATH, header=None)
+    df = pd.read_csv(PREPROCESSED_FILEPATH, header=None)
+
+    # remove the last row of the df
+    df = df.iloc[:-1]
+
     print(f"Length of df {df.shape[0]} {df.shape[1]}")
     points = []
     edges = []
