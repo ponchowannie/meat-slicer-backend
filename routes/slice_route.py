@@ -30,6 +30,13 @@ def slice_data():
         "slice_data": slice_data,
         "volume": volume,
     }
+
+    # Singal Sclicing process completion
+    flag_file = 'slicing_done.flag'
+    with open(flag_file, 'w') as f:
+        f.write('Slicing completed')
+    print(f"Flag file '{flag_file}' created.")
+
     return jsonify(response_data)
 
 @slicing_routes.route("/get_slices", methods=["POST"])

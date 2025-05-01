@@ -1,6 +1,7 @@
 from conveyor import start_conveyor, stop_conveyor, initialize_arduino, listen_to_arduino
 import threading
 import time
+import os
 
 def main():
     # Initialize Arduino
@@ -21,9 +22,15 @@ def main():
         # Stop the conveyor when Arduino signals
         stop_conveyor()
 
-        # Simulate waiting for an external process to finish
-        print("Waiting for external process to finish...")
-        time.sleep(5)  # Replace with actual external process logic
+        # Wait for the slicing process to finish
+        flag_file = 'slicing_done.flag'
+        while not os.path.exists(flag_file):
+            print("Waiting for slicing process to finish...")
+            time.sleep(1)
+
+        # Remove the flag file after detecting it
+        os.remove(flag_file)
+        print("Slicing process completed. Resuming conveyor...")
 
         # Reset the stop event and resume the conveyor
         stop_event.clear()
