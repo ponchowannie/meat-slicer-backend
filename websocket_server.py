@@ -1,11 +1,12 @@
 import asyncio
 import websockets
+import websockets.exceptions  # For handling handshake errors
 import requests  # Added for REST API call
 from csv_utils.csv_handler import df_aggregate_volume_to_csv, process_data
 from config import BACKEND_HOST, BACKEND_PORT
 
 # Handle incoming WebSocket messages
-async def handle_connection(websocket, path):
+async def handle_connection(websocket):
     print("WebSocket connection established")
     try:
         while True:
@@ -33,6 +34,8 @@ async def handle_connection(websocket, path):
                 "Status": 200,
             }
             await websocket.send(str(response))
+    except websockets.exceptions.InvalidHandshake as e:
+        print(f"Invalid WebSocket handshake: {e}")
     except websockets.ConnectionClosed:
         print("WebSocket connection closed")
     except Exception as e:

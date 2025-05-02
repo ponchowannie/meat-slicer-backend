@@ -39,6 +39,9 @@ def preprocess_df(df, x_resolution, y_resolution):
     return df
 
 def df_aggregate_volume_to_csv(df):
+    # Replace empty strings with zero
+    df.replace("", 0, inplace=True)
+
     # Clean csv data for the df
     df = preprocess_df(df, x_resolution=0.178, y_resolution=0.338)
 
