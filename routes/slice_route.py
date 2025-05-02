@@ -2,8 +2,10 @@ from flask import Blueprint, jsonify, request
 from process.helper import create_slice_dict, volume_aggregator
 from config import *
 from csv_utils.csv_handler import get_volume_from_csv
+from voron.voron_controller import VoronController
 
 slicing_routes = Blueprint("slicing", __name__)
+voron = VoronController()
 
 @slicing_routes.route("/slice", methods=["POST"])
 def slice_data():
@@ -21,7 +23,7 @@ def slice_data():
         num_slices=slices, volume=volume, cut_axis=axis
     )
     print(f"Slice data created: {slice_data}")
-    volume_aggregator(df, slice_data=slice_data)
+    cut_positions = volume_aggregator(df, slice_data=slice_data)
     
     response_data = {
         "message": "Slicing request processed successfully",
@@ -30,6 +32,11 @@ def slice_data():
         "slice_data": slice_data,
         "volume": volume,
     }
+
+    # Pass calculated cut positions to VORON
+    for position in cut_positions:
+        response = voron.send_xyz_coordinates(position["x"], position["end_cut_position"])
+        print(f"VORON response: {response}")
 
     # Singal Sclicing process completion
     flag_file = 'slicing_done.flag'

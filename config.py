@@ -10,6 +10,9 @@ PREPROCESSED_FILEPATH = "./files/prepocessed_data.csv"
 # WebSocket
 WEBSOCKET_ENDPOINT = "ws://127.0.0.1:8765"
 
+# Moonraker
+MOONRAKER_HOST = "http://172.20.10.6"
+
 # constants
 DEPTH_INCREMENT = 0.3
 DECIMAL_POINTS = 3

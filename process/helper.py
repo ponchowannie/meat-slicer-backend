@@ -68,6 +68,7 @@ def volume_aggregator(
     # Calculate the volume using the trapezoidal rule
     total_volume = 0.0  # in mm^3
     integral_time = time.time()
+    cut_positions = []  # List to store cut positions and x-coordinates
     for i, dx_value in enumerate(dx[:-1]):  # per column, avoid last index
         for j, dy_value in enumerate(dy[:-1]):  # per cell in the column, avoid last index
             # Calculate the average height of the four corners of the cell
@@ -91,9 +92,14 @@ def volume_aggregator(
                     f"Cut at {cut_axis1} position: {x_coords[i]}, "
                     f"from {cut_axis2}: {start_cut_position:.3f} to {end_cut_position:.3f} # 10% offset"
                 )
+                cut_positions.append({
+                    "x": x_coords[i],
+                    "start_cut_position": start_cut_position,
+                    "end_cut_position": end_cut_position
+                })
                 print_time(f"Accumulated volume: {total_volume/1000:.2f} cm^3", integral_time)
                 integral_time = time.time()
                 total_volume = 0.0  # Reset for the next slice
     print("-----------------------------")
     print_time("Processed cut positions for a total time of", start_time)
-    return None
+    return cut_positions  # Return the collected cut positions
