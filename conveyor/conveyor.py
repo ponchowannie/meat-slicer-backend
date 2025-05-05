@@ -28,6 +28,6 @@ def listen_to_arduino(stop_event):
         if arduino.in_waiting > 0:
             message = arduino.readline().decode('utf-8').rstrip()
             print(f"Received from Arduino: {message}")
-            if message == "DETECTED":
+            if message == "PASSED":
                 stop_conveyor()
                 stop_event.set()
