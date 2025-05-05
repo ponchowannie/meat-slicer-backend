@@ -1,4 +1,4 @@
-from moonrakerpy import Moonraker
+from moonrakerpy import moonpy
 from config import MOONRAKER_HOST, X_VORON_START_POS, Y_VORON_START_POS
 
 # Voron Home
@@ -6,7 +6,7 @@ from config import MOONRAKER_HOST, X_VORON_START_POS, Y_VORON_START_POS
 
 class VoronController:
     def __init__(self, host=MOONRAKER_HOST):
-        self.client = Moonraker(host=host)
+        self.client = moonpy.MoonrakerPrinter(host)
 
     def send_xyz_coordinates(self, x, y):
         # Adjust coordinates based on the Voron home position

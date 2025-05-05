@@ -1,0 +1,48 @@
+#include <Stepper.h>
+
+const int stepsPerRevolution = 200;
+Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
+const int stepDelay_swing = 60;
+bool motorRunning = false;
+bool wasDetected = false;  // Tracks previous sensor state
+
+const int stopSensor = 2;
+
+void setup()
+{
+    myStepper.setSpeed(60);
+    Serial.begin(9600);
+    pinMode(stopSensor, INPUT_PULLUP);
+}
+
+void loop() 
+{
+    if (Serial.available() > 0) {
+        String command = Serial.readStringUntil('\n'); // Read command from Python
+
+        if (command == "START") {
+            motorRunning = true;
+        } 
+        else if (command == "STOP") {
+            motorRunning = false;
+        }
+    }
+
+    if (motorRunning) {
+        myStepper.step(stepsPerRevolution);
+        delayMicroseconds(stepDelay_swing);
+    } else {
+        delay(200);
+    }
+
+    bool sensorState = digitalRead(stopSensor) == LOW;
+
+    if (sensorState && !wasDetected) {
+        Serial.println("DETECTED");
+        wasDetected = true;
+    } 
+    else if (!sensorState && wasDetected) {
+        Serial.println("PASSED");
+        wasDetected = false;
+    }
+}
