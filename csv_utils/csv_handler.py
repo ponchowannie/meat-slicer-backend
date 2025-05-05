@@ -3,6 +3,7 @@ import os
 import time
 import pandas as pd
 import numpy as np
+from config import X_RESOLUTION, Y_RESOLUTION
 
 # Add the parent directory to the Python path to access config globally
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -43,7 +44,7 @@ def df_aggregate_volume_to_csv(df):
     df.replace("", 0, inplace=True)
 
     # Clean csv data for the df
-    df = preprocess_df(df, x_resolution=0.178, y_resolution=0.338)
+    df = preprocess_df(df, x_resolution=X_RESOLUTION, y_resolution=Y_RESOLUTION)
 
     # Find the start time
     start_time = time.time()

@@ -3,6 +3,7 @@ from process.helper import create_slice_dict, volume_aggregator
 from config import *
 from csv_utils.csv_handler import get_volume_from_csv
 from voron.voron_controller import VoronController
+import time
 
 slicing_routes = Blueprint("slicing", __name__)
 voron = VoronController()
@@ -38,6 +39,8 @@ def slice_data():
         response = voron.send_xyz_coordinates(position["axis_position"], position["start_cut_position"])
         response = voron.send_xyz_coordinates(position["axis_position"], position["end_cut_position"])
         print(f"VORON response: {response}")
+
+    time.sleep(10)
 
     # Singal Sclicing process completion
     flag_file = 'slicing_done.flag'
