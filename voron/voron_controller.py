@@ -1,5 +1,5 @@
 from moonrakerpy import Moonraker
-from config import MOONRAKER_HOST
+from config import MOONRAKER_HOST, X_VORON_START_POS, Y_VORON_START_POS
 
 # Voron Home
 # X20 Y270
@@ -9,11 +9,9 @@ class VoronController:
         self.client = Moonraker(host=host)
 
     def send_xyz_coordinates(self, x, y):
-        X_OFFSET = 20
-        Y_OFFSET = 270
         # Adjust coordinates based on the Voron home position
-        x_abs = X_OFFSET + x
-        y_abs = Y_OFFSET - y
+        x_abs = X_VORON_START_POS + x
+        y_abs = Y_VORON_START_POS - y
         command = f"G1 X{x_abs} Y{y_abs} F3000"
         response = self.client.send_gcode(command)
         print(f"Sent command: {command}")

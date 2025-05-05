@@ -93,7 +93,7 @@ def volume_aggregator(
                     f"from {cut_axis2}: {start_cut_position:.3f} to {end_cut_position:.3f} # 10% offset"
                 )
                 cut_positions.append({
-                    "x": x_coords[i],
+                    "axis_position": x_coords[i],
                     "start_cut_position": start_cut_position,
                     "end_cut_position": end_cut_position
                 })
