@@ -1,4 +1,4 @@
-from moonrakerpy import moonpy
+import moonrakerpy as moonpy
 from config import MOONRAKER_HOST, X_VORON_START_POS, Y_VORON_START_POS
 
 # Voron Home
