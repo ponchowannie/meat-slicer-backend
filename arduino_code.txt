@@ -5,13 +5,14 @@ Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
 const int stepDelay_swing = 60;
 bool motorRunning = false;
 bool wasDetected = false;  // Tracks previous sensor state
+bool isPassed = false;
 
 const int stopSensor = 2;
 
 void setup()
 {
     myStepper.setSpeed(60);
-    Serial.begin(9600);
+    Serial.begin(115200);
     pinMode(stopSensor, INPUT_PULLUP);
 }
 
@@ -21,18 +22,24 @@ void loop()
         String command = Serial.readStringUntil('\n'); // Read command from Python
 
         if (command == "START") {
+            isPassed = false;
             motorRunning = true;
+
         } 
         else if (command == "STOP") {
             motorRunning = false;
         }
     }
 
+    if (isPassed) {
+      motorRunning = false;
+    }
+
     if (motorRunning) {
         myStepper.step(stepsPerRevolution);
         delayMicroseconds(stepDelay_swing);
     } else {
-        delay(200);
+        delay(100);
     }
 
     bool sensorState = digitalRead(stopSensor) == LOW;
@@ -44,5 +51,6 @@ void loop()
     else if (!sensorState && wasDetected) {
         Serial.println("PASSED");
         wasDetected = false;
+        isPassed = true;
     }
 }
