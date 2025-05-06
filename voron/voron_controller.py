@@ -1,5 +1,6 @@
 import moonrakerpy as moonpy
 from config import MOONRAKER_HOST, X_VORON_START_POS, Y_VORON_START_POS
+import time
 
 # Voron Home
 # X20 Y270
@@ -20,3 +21,12 @@ class VoronController:
 
     def close_connection(self):
         print("No persistent connection to close with Moonraker.")
+
+    # TODO: Update methof of checking status
+    def is_status_idle(self):
+        while True:
+            response = self.client.printer.objects.list()
+            print(response["result"]["objects"])
+            if response['state'].lower() == "idle":
+                return True
+            time.sleep(0.2)
