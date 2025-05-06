@@ -1,12 +1,13 @@
 import serial
 import time
+from config import *
 
 arduino = None
 
 def initialize_arduino():
     global arduino
     # Arduino port (Linux/macOS: '/dev/ttyUSB0' or '/dev/ttyACM0')
-    arduino = serial.Serial(port='COM5', baudrate=9600, timeout=1)
+    arduino = serial.Serial(port=ARDUINO_PORT, baudrate=ARDUINO_BAUDRATE, timeout=ARDUINO_TIMEOUT)
     time.sleep(2)  # Give Arduino time to reset
 
 def send_command(command):

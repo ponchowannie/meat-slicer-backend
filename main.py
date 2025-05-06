@@ -19,9 +19,6 @@ def main():
         # Wait for the Arduino listener to signal a stop
         arduino_thread.join()
 
-        # Stop the conveyor when Arduino signals
-        stop_conveyor()
-
         # Wait for the slicing process to finish
         flag_file = 'slicing_done.flag'
         while not os.path.exists(flag_file):

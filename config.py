@@ -10,6 +10,11 @@ PREPROCESSED_FILEPATH = "./files/prepocessed_data.csv"
 # WebSocket
 WEBSOCKET_ENDPOINT = "ws://127.0.0.1:8765"
 
+# Arduino
+ARDUINO_PORT = "COM5"
+ARDUINO_BAUDRATE = 115200 # Make sure this matches the Arduino's baud rate
+ARDUINO_TIMEOUT = 1
+
 # Moonraker
 MOONRAKER_HOST = "http://172.20.10.6"
 
