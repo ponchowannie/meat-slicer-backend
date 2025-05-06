@@ -35,16 +35,9 @@ def slice_data():
     }
 
     # Pass calculated cut positions to VORON
-    for position in cut_positions:
-        response = voron.send_xyz_coordinates(position["axis_position"], position["start_cut_position"])
-        response = voron.send_xyz_coordinates(position["axis_position"], position["end_cut_position"])
-        print(f"VORON response: {response}")
+    voron.process_cut_positions(cut_positions)
 
-    # Wait for the voron to be idle
-    if voron.is_status_idle():
-        print("Voron is Idle")
-
-    # Singal Sclicing process completion
+    # Signal slicing process completion
     flag_file = 'slicing_done.flag'
     with open(flag_file, 'w') as f:
         f.write('Slicing completed')
