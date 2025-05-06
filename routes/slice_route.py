@@ -4,6 +4,7 @@ from config import *
 from csv_utils.csv_handler import get_volume_from_csv
 from voron.voron_controller import VoronController
 import time
+from conveyor.conveyor import start_conveyor
 
 slicing_routes = Blueprint("slicing", __name__)
 voron = VoronController()
@@ -34,6 +35,7 @@ def slice_data():
         "volume": volume,
     }
 
+    start_conveyor()
     # Pass calculated cut positions to VORON
     voron.process_cut_positions(cut_positions)
 
