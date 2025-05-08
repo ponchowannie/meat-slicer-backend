@@ -14,7 +14,7 @@ class VoronController:
         # Adjust coordinates based on the Voron home position
         x_abs = X_VORON_START_POS + x
         y_abs = Y_VORON_START_POS - y
-        command = f"G1 X{x_abs} Y{y_abs} F3000"
+        command = f"G1 X{x_abs} Y{y_abs} F6000"
         response = self.client.send_gcode(command)
         print(f"Sent command: {command}")
         print(f"Received response: {response}")
@@ -26,21 +26,21 @@ class VoronController:
     def is_status_idle(self):
         while True:
             try:
-                response = requests.get(f"{MOONRAKER_HOST}/printer/objects/query?toolhead")
+                response = requests.get(f"{MOONRAKER_HOST}/printer/objects/query?motion_report")
                 if response.status_code != 200:
                     print("Error fetching status from Moonraker")
                     time.sleep(0.2)
                     continue
 
                 status = response.json()
-                motion_queue = status['result']['status']['toolhead']['motion_queue']
-                if motion_queue == 0:
+                live_velocity = status['result']['status']['motion_report']['live_velocity']
+                if live_velocity == 0:
                     return True
             except Exception as e:
                 print(f"Error querying Moonraker: {e}")
             time.sleep(0.1)
 
-    def process_cut_positions(self, cut_positions, belt_speed=10, voron_speed=50):
+    def process_cut_positions(self, cut_positions, belt_speed=21, voron_speed=30):
         """
         Process the given cut positions, adjusting for conveyor movement and Voron movement speed.
         :param cut_positions: List of cut positions with axis_position, start_cut_position, and end_cut_position.
