@@ -19,8 +19,8 @@ def process_data(data):
     data_list = [row.split(",") for row in rows]
     # Create a DataFrame
     df = pd.DataFrame(data_list)
-
-    return df
+    new_df = df[df.columns[::-1]]
+    return new_df
 
 def preprocess_df(df, x_resolution, y_resolution):
     # Find the start time
