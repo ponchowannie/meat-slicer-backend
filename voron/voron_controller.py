@@ -88,7 +88,10 @@ class VoronController:
                 unit_y = distance_y/magnitude
                 velocity_y = voron_speed * unit_y
 
-                adjusted_axis_position += belt_speed * (distance_y/velocity_y)
+                if i%2 != 0:
+                    adjusted_axis_position += belt_speed * (distance_y/velocity_y)
+                else:
+                    adjusted_axis_position = adjusted_axis_position
             # Send adjusted position to Voron
             self.send_xyz_coordinates(adjusted_axis_position, movement["y_position"])
             while not self.is_status_idle():
