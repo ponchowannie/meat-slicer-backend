@@ -55,15 +55,25 @@ class VoronController:
 
         # Flatten the cut queue into individual movements
         movement_queue = []
-        for position in cut_positions:
-            movement_queue.append({
-                "axis_position": position["axis_position"],
-                "y_position": position["start_cut_position"]
-            })
-            movement_queue.append({
-                "axis_position": position["axis_position"],
-                "y_position": position["end_cut_position"]
-            })
+        for num, position in enumerate(cut_positions):
+            if num // 2 == 0:
+                movement_queue.append({
+                    "axis_position": position["axis_position"],
+                    "y_position": position["end_cut_position"]
+                })
+                movement_queue.append({
+                    "axis_position": position["axis_position"],
+                    "y_position": position["start_cut_position"]
+                })
+            else:
+                movement_queue.append({
+                    "axis_position": position["axis_position"],
+                    "y_position": position["start_cut_position"]
+                })
+                movement_queue.append({
+                    "axis_position": position["axis_position"],
+                    "y_position": position["end_cut_position"]
+                })
 
         for i, movement in enumerate(movement_queue):
             # Calculate elapsed time and update belt offset
@@ -88,7 +98,7 @@ class VoronController:
                 unit_y = distance_y/magnitude
                 velocity_y = voron_speed * unit_y
 
-                if i%2 != 0:
+                if i%2 == 0:
                     adjusted_axis_position += belt_speed * (distance_y/velocity_y)
                 else:
                     adjusted_axis_position = adjusted_axis_position
