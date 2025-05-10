@@ -75,12 +75,20 @@ class VoronController:
             adjusted_axis_position = movement["axis_position"] + belt_offset
 
             # Calculate Voron movement time
-            # if i > 0:
-            #     prev_movement = movement_queue[i - 1]
-                # distance = abs(adjusted_axis_position - (prev_movement["axis_position"] + belt_offset))
-                # voron_movement_time = distance / voron_speed
-                # belt_offset += belt_speed * voron_movement_time
+            if i > 0:
+                current_movement = movement_queue[i - 1]
+                distance = abs(adjusted_axis_position - (current_movement["axis_position"] + belt_offset))
+                voron_movement_time = distance / voron_speed
+                belt_offset += belt_speed * voron_movement_time
 
+                distance_y = movement["y_position"] - current_movement["y_position"]
+                distance_x = movement["axis_position"] - current_movement["axis_position"]
+
+                magnitude = math.sqrt(distance_x**2 + distance_y**2)
+                unit_y = distance_y/magnitude
+                velocity_y = voron_speed * unit_y
+
+                adjusted_axis_position += belt_speed * (distance_y/velocity_y)
             # Send adjusted position to Voron
             self.send_xyz_coordinates(adjusted_axis_position, movement["y_position"])
             while not self.is_status_idle():
