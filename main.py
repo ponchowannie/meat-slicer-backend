@@ -13,11 +13,11 @@ def main():
         start_conveyor()
 
         # Start listening to Arduino in a separate thread
-        arduino_thread = threading.Thread(target=listen_to_arduino, args=(stop_event,))
-        arduino_thread.start()
+        # arduino_thread = threading.Thread(target=listen_to_arduino, args=(stop_event,))
+        # arduino_thread.start()
 
         # Wait for the Arduino listener to signal a stop
-        arduino_thread.join()
+        # arduino_thread.join()
 
         # Wait for the slicing process to finish
         flag_file = 'slicing_done.flag'
@@ -25,12 +25,16 @@ def main():
             print("Waiting for slicing process to finish...")
             time.sleep(1)
 
+        start_conveyor()
+
         # Remove the flag file after detecting it
         os.remove(flag_file)
         print("Slicing process completed. Resuming conveyor...")
 
+
+
         # Reset the stop event and resume the conveyor
-        stop_event.clear()
+        # stop_event.clear()
         print("Resuming conveyor process...")
 
 if __name__ == "__main__":

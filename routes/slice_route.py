@@ -35,6 +35,7 @@ def slice_data():
         "volume": volume,
     }
 
+    start_cut_time = time.time()
     # Signal slicing process completion
     flag_file = 'slicing_done.flag'
     with open(flag_file, 'w') as f:
@@ -42,7 +43,7 @@ def slice_data():
     print(f"Flag file '{flag_file}' created.")
 
     # Pass calculated cut positions to VORON
-    voron.process_cut_positions(cut_positions)
+    voron.process_cut_positions(cut_positions, start_cut_time)
 
     return jsonify(response_data)
 

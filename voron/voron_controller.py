@@ -42,68 +42,83 @@ class VoronController:
                 print(f"Error querying Moonraker: {e}")
             time.sleep(0.1)
 
-    def process_cut_positions(self, cut_positions, belt_speed=21, voron_speed=100):
+    def process_cut_positions(self, cut_positions, start_cut_time, belt_speed=21, voron_speed=100):
         """
         Process the given cut positions, adjusting for conveyor movement and Voron movement speed.
         :param cut_positions: List of cut positions with axis_position, start_cut_position, and end_cut_position.
         :param belt_speed: Speed of the conveyor belt in mm/s.
         :param voron_speed: Speed of the Voron in mm/s.
         """
-        cutting_start_time = time.time()
+        cutting_start_time = start_cut_time
         last_time = time.time()
         belt_offset = 0
 
         # Flatten the cut queue into individual movements
         movement_queue = []
         for num, position in enumerate(cut_positions):
-            if num // 2 == 0:
+            if num % 2 != 0:
+                print("added swap", num)
                 movement_queue.append({
                     "axis_position": position["axis_position"],
-                    "y_position": position["end_cut_position"]
+                    "y_position": position["end_cut_position"],
+                    "index": "end"
                 })
                 movement_queue.append({
                     "axis_position": position["axis_position"],
-                    "y_position": position["start_cut_position"]
+                    "y_position": position["start_cut_position"],
+                    "index": "start"
                 })
             else:
+                print("added normal", num)
                 movement_queue.append({
                     "axis_position": position["axis_position"],
-                    "y_position": position["start_cut_position"]
+                    "y_position": position["start_cut_position"],
+                    "index": "start"
                 })
                 movement_queue.append({
                     "axis_position": position["axis_position"],
-                    "y_position": position["end_cut_position"]
+                    "y_position": position["end_cut_position"],
+                    "index": "end"
                 })
 
+        adjusted_axis_positions_list = []
+        
         for i, movement in enumerate(movement_queue):
-            # Calculate elapsed time and update belt offset
+            # Calculate the Base Offset
             current_time = time.time()
             elapsed_time = current_time - cutting_start_time
-            belt_offset = belt_speed * elapsed_time
+            base_offset = belt_speed * elapsed_time
 
             # Adjust axis_position (X-axis) with the belt offset
-            adjusted_axis_position = movement["axis_position"] + belt_offset
+            adjusted_axis_position = movement["axis_position"] + base_offset
 
             # Calculate Voron movement time
-            if i > 0:
-                current_movement = movement_queue[i - 1]
-                distance = abs(adjusted_axis_position - (current_movement["axis_position"] + belt_offset))
+            if len(adjusted_axis_positions_list) != 0:
+                current_adjusted_position = adjusted_axis_positions_list[i - 1]
+                distance = abs(adjusted_axis_position - current_adjusted_position)
                 voron_movement_time = distance / voron_speed
-                belt_offset += belt_speed * voron_movement_time
+                belt_offset = belt_speed * voron_movement_time
 
-                distance_y = movement["y_position"] - current_movement["y_position"]
-                distance_x = movement["axis_position"] - current_movement["axis_position"]
+            # distance_y = movement["y_position"] - current_movement["y_position"]
+            # distance_x = movement["axis_position"] - current_movement["axis_position"]
 
-                magnitude = math.sqrt(distance_x**2 + distance_y**2)
-                unit_y = distance_y/magnitude
-                velocity_y = voron_speed * unit_y
+            # magnitude = math.sqrt(distance_x**2 + distance_y**2)
+            # unit_y = distance_y/magnitude
+            # velocity_y = voron_speed * unit_y
+            if i%2 == 1:
+                adjusted_axis_position += belt_offset
+            else:
+                adjusted_axis_position = adjusted_axis_position
 
-                if i%2 == 0:
-                    adjusted_axis_position += belt_speed * (distance_y/velocity_y)
-                else:
-                    adjusted_axis_position = adjusted_axis_position
+            # adjusted_axis_position += belt_offset
+            adjusted_axis_position *= 1.15
+
+            # Collect adjusted data in a list
+            adjusted_axis_positions_list.append(adjusted_axis_position)
+
             # Send adjusted position to Voron
             self.send_xyz_coordinates(adjusted_axis_position, movement["y_position"])
             while not self.is_status_idle():
                 print("")
+        print(movement_queue)
                 
