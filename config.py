@@ -1,5 +1,5 @@
 # Website
-WEBSITE_SERVER = "http://localhost:5174"
+WEBSITE_SERVER = "http://localhost:5173"
 
 # Backend
 BACKEND_HOST = "http://127.0.0.1"
